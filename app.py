@@ -243,31 +243,22 @@ st.markdown("""
 
 
 # =========================================================
-# UPLOAD EXCEL
+# MEMBACA EXCEL OTOMATIS DARI REPOSITORY GITHUB
 # =========================================================
-uploaded_file = st.file_uploader(
-    "Upload file Excel penjualan",
-    type=["xlsx"]
-)
+# Simpan file Excel di folder yang sama dengan app.py.
+# Pastikan nama file di bawah sama persis dengan nama di GitHub.
+EXCEL_FILE = "Data_Simulasi_Penjualan_Gudeg_Jogja_2025.xlsx"
 
-if uploaded_file is None:
-    st.info("Upload file Excel penjualan untuk menampilkan dashboard.")
-    st.stop()
-
-
-# =========================================================
-# MEMBACA EXCEL
-# =========================================================
 try:
     try:
         df = pd.read_excel(
-            uploaded_file,
+            EXCEL_FILE,
             sheet_name="Data_Penjualan"
         )
     except ValueError:
-        uploaded_file.seek(0)
+        # Jika sheet Data_Penjualan tidak ada, baca sheet pertama.
         df = pd.read_excel(
-            uploaded_file,
+            EXCEL_FILE,
             sheet_name=0
         )
 
@@ -948,7 +939,7 @@ try:
         f'{len(data):,} baris data setelah filter<br>'
         f'{data["Tanggal"].min():%d/%m/%Y} – '
         f'{data["Tanggal"].max():%d/%m/%Y}<br>'
-        f'Sumber: file Excel yang diunggah. '
+        f'Sumber: file Excel dalam repository aplikasi. '
         f'Data simulasi untuk pembelajaran.'
         f'</div>',
         unsafe_allow_html=True
