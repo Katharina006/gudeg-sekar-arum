@@ -77,6 +77,28 @@ st.markdown("""
     color: #FFFFFF !important;
 }
 
+/* Caption petunjuk filter harus jelas di sidebar gelap */
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p,
+[data-testid="stSidebar"] small {
+    color: #DCE7D8 !important;
+    opacity: 1 !important;
+}
+
+/* Pilihan multiselect: sage, bukan merah bawaan tema */
+[data-testid="stSidebar"] [data-baseweb="tag"] {
+    background-color: #8FA58A !important;
+    border: 1px solid #C4D2BF !important;
+    border-radius: 7px !important;
+}
+[data-testid="stSidebar"] [data-baseweb="tag"] span,
+[data-testid="stSidebar"] [data-baseweb="tag"] svg {
+    color: #203B2C !important;
+    fill: #203B2C !important;
+}
+[data-testid="stSidebar"] [data-baseweb="select"] input {
+    color: #FFFFFF !important;
+}
+
 /* Teks umum */
 .stMarkdown, .stMarkdown p, .stMarkdown label {
     color: #26352C;
@@ -99,19 +121,29 @@ h1, h2, h3, p, label {
 }
 [data-testid="stDateInput"] svg { fill: #203B2C !important; }
 
-/* Detail penjualan */
-div[data-testid="stExpander"],
+/* Detail penjualan: panel dan judul selalu terlihat */
+div[data-testid="stExpander"] {
+    background-color: #FFFFFF !important;
+    border: 1px solid #C9D5C5 !important;
+    border-radius: 12px !important;
+}
 div[data-testid="stExpander"] details,
-div[data-testid="stExpander"] summary,
-div[data-testid="stDataFrame"],
-div[data-testid="stDataFrame"] *,
-div[data-testid="stTable"] {
+div[data-testid="stExpander"] summary {
     background-color: #FFFFFF !important;
     color: #203B2C !important;
 }
 div[data-testid="stExpander"] summary p,
 div[data-testid="stExpander"] summary span,
+div[data-testid="stExpander"] summary svg,
 div[data-testid="stExpander"] label {
+    color: #203B2C !important;
+    fill: #203B2C !important;
+    opacity: 1 !important;
+}
+div[data-testid="stDataFrame"],
+div[data-testid="stDataFrame"] *,
+div[data-testid="stTable"] {
+    background-color: #FFFFFF !important;
     color: #203B2C !important;
 }
 
@@ -488,7 +520,7 @@ try:
     )
 
     st.markdown(
-        f'<div class="section-sub">Periode '
+        f'<div class="section-subtitle">Periode '
         f'{start_date:%d/%m/%Y} – {end_date:%d/%m/%Y}. '
         f'Angka mengikuti filter yang dipilih.</div>',
         unsafe_allow_html=True
@@ -553,7 +585,7 @@ try:
     )
 
     st.markdown(
-        '<div class="section-sub">'
+        '<div class="section-subtitle">'
         'Pantau perubahan omzet berdasarkan waktu.</div>',
         unsafe_allow_html=True
     )
@@ -700,7 +732,7 @@ try:
     )
 
     st.markdown(
-        '<div class="section-sub">'
+        '<div class="section-subtitle">'
         'Bandingkan omzet antar-outlet dan kanal penjualan.</div>',
         unsafe_allow_html=True
     )
@@ -893,7 +925,7 @@ try:
     )
 
     st.markdown(
-        '<div class="section-sub">'
+        '<div class="section-subtitle">'
         'Kontribusi omzet berdasarkan jenis hari dan insight.</div>',
         unsafe_allow_html=True
     )
@@ -1039,11 +1071,11 @@ try:
     # =====================================================
     st.markdown(
         '<div class="section-title">Detail dan Unduh Data</div>'
-        '<div class="section-sub">Bagian ini memakai latar putih dan teks gelap '
+        '<div class="section-subtitle">Bagian ini memakai latar putih dan teks gelap '
         'agar tetap terbaca saat tema aplikasi berubah.</div>',
         unsafe_allow_html=True
     )
-    with st.expander("Lihat detail data penjualan"):
+    with st.expander("Lihat detail data penjualan", expanded=True):
         st.dataframe(
             data.sort_values(
                 "Tanggal",
