@@ -2,15 +2,15 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# =========================================================
-# KONFIGURASI
-# =========================================================
 st.set_page_config(
     page_title="Gudeg Sekar Arum Yogyakarta",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
+# =========================================================
+# PALET WARNA
+# =========================================================
 BG = "#F4F2EA"
 CARD = "#FFFFFF"
 DARK = "#203B2C"
@@ -30,15 +30,12 @@ GRID = "#E1E5DC"
 # =========================================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
-
 .stApp {
     background-color: #F4F2EA !important;
     color: #26352C !important;
-    font-family: 'DM Sans', sans-serif;
 }
 [data-testid="stHeader"] {
-    background: rgba(244,242,234,0.96) !important;
+    background: #F4F2EA !important;
 }
 [data-testid="stMain"] {
     background-color: #F4F2EA !important;
@@ -59,7 +56,7 @@ st.markdown("""
 [data-testid="stSidebar"] [data-baseweb="select"] > div,
 [data-testid="stSidebar"] [data-baseweb="input"] > div {
     background-color: #314C39 !important;
-    border-color: #6C826C !important;
+    border-color: #8FA58A !important;
 }
 [data-testid="stSidebar"] input {
     color: #FFFFFF !important;
@@ -71,10 +68,8 @@ st.markdown("""
     opacity: 1 !important;
 }
 
-/* Warna pilihan filter, hijau sage bukan merah */
-[data-testid="stSidebar"] [data-baseweb="tag"],
-[data-testid="stSidebar"] [data-baseweb="tag"] > span,
-[data-testid="stSidebar"] [data-baseweb="tag"] > div {
+/* Filter hijau sage */
+[data-testid="stSidebar"] [data-baseweb="tag"] {
     background-color: #A9BBA3 !important;
     border: 1px solid #D7E1D2 !important;
     border-radius: 7px !important;
@@ -86,113 +81,46 @@ st.markdown("""
     fill: #203B2C !important;
     background-color: transparent !important;
 }
-[data-testid="stSidebar"] [data-baseweb="select"] input {
-    color: #FFFFFF !important;
-    -webkit-text-fill-color: #FFFFFF !important;
+[data-baseweb="popover"] {
+    color: #26352C !important;
+}
+[data-baseweb="popover"] li {
+    color: #26352C !important;
 }
 
-/* Teks umum */
-.stMarkdown, .stMarkdown p, .stMarkdown label {
-    color: #26352C;
+/* Input tanggal */
+[data-testid="stDateInput"] label {
+    color: #F7F7F0 !important;
 }
-h1, h2, h3, p, label {
-    color: #26352C;
-}
-
-/* Tanggal tetap terbaca di mode terang maupun gelap */
-[data-testid="stDateInput"] label,
-[data-testid="stDateInput"] p,
-[data-testid="stDateInput"] input,
-[data-testid="stDateInput"] button,
-[data-testid="stDateInput"] [data-baseweb="input"] > div,
-[data-testid="stDateInput"] [data-baseweb="select"] > div {
-    color: #203B2C !important;
-    -webkit-text-fill-color: #203B2C !important;
+[data-testid="stDateInput"] input {
     background-color: #FFFFFF !important;
+    color: #26352C !important;
+    -webkit-text-fill-color: #26352C !important;
     border-color: #B8C7B5 !important;
-    opacity: 1 !important;
 }
-[data-testid="stDateInput"] svg {
-    fill: #203B2C !important;
-}
-[data-testid="stSidebar"] [data-testid="stDateInput"] label *,
-[data-testid="stSidebar"] [data-testid="stDateInput"] input,
-[data-testid="stSidebar"] [data-testid="stDateInput"] input::placeholder,
-[data-testid="stSidebar"] [data-testid="stDateInput"] button *,
-[data-testid="stSidebar"] [data-testid="stDateInput"] [data-baseweb="input"] *,
-[data-testid="stSidebar"] [data-testid="stDateInput"] [data-baseweb="select"] * {
-    color: #203B2C !important;
-    -webkit-text-fill-color: #203B2C !important;
-    opacity: 1 !important;
-}
-[data-testid="stSidebar"] [data-testid="stDateInput"] [data-baseweb="input"] > div,
-[data-testid="stSidebar"] [data-testid="stDateInput"] [data-baseweb="select"] > div {
+[data-testid="stDateInput"] button {
     background-color: #FFFFFF !important;
-    border-color: #A9BBA3 !important;
-}
-[data-testid="stSidebar"] [data-testid="stDateInput"] svg {
-    fill: #203B2C !important;
-    color: #203B2C !important;
+    color: #26352C !important;
 }
 
-/* Detail penjualan */
-div[data-testid="stExpander"] {
-    background-color: #FFFFFF !important;
-    border: 1px solid #C9D5C5 !important;
-    border-radius: 12px !important;
-}
-div[data-testid="stExpander"] details,
-div[data-testid="stExpander"] summary {
-    background-color: #FFFFFF !important;
-    color: #203B2C !important;
-}
-div[data-testid="stExpander"] summary p,
-div[data-testid="stExpander"] summary span,
-div[data-testid="stExpander"] summary svg,
-div[data-testid="stExpander"] label {
-    color: #203B2C !important;
-    fill: #203B2C !important;
-    opacity: 1 !important;
-}
-div[data-testid="stDataFrame"],
-div[data-testid="stDataFrame"] *,
-div[data-testid="stTable"] {
-    background-color: #FFFFFF !important;
-    color: #203B2C !important;
-}
-
-/* Tombol download */
-div[data-testid="stDownloadButton"] button {
-    background-color: #203B2C !important;
-    color: #FFFFFF !important;
-    border: 1px solid #203B2C !important;
-    font-weight: 700 !important;
-}
-div[data-testid="stDownloadButton"] button p,
-div[data-testid="stDownloadButton"] button span {
-    color: #FFFFFF !important;
-}
-
-/* Header dashboard */
+/* Header */
 .hero {
-    background: linear-gradient(115deg,#E5EADD 0%,#FFFDF5 55%,#E7EBDD 100%);
+    background: linear-gradient(115deg, #E5EADD, #FFFDF5, #E7EBDD);
     border: 1px solid #D9E0D3;
     border-radius: 22px;
-    padding: 32px 36px;
-    margin-bottom: 25px;
-    box-shadow: 0 5px 20px rgba(32,59,44,.06);
+    padding: 30px 34px;
+    margin-bottom: 24px;
 }
 .hero-title {
     color: #203B2C !important;
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(30px,3.5vw,46px);
+    font-family: Georgia, serif;
+    font-size: clamp(30px, 3.5vw, 46px);
     font-weight: 700;
-    line-height: 1.2;
     margin: 0;
 }
 .hero-location {
-    color: #4F6B50 !important;
-    font-size: 15px;
+    color: #238636 !important;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 5px;
     margin-top: 8px;
@@ -200,14 +128,13 @@ div[data-testid="stDownloadButton"] button span {
 .hero-description {
     color: #526358 !important;
     font-size: 14px;
-    margin-top: 14px;
-    margin-bottom: 0;
+    margin-top: 12px;
 }
 
 /* Judul bagian */
 .section-title {
     color: #203B2C !important;
-    font-family: 'Playfair Display', serif;
+    font-family: Georgia, serif;
     font-size: 25px;
     font-weight: 700;
     margin-top: 22px;
@@ -216,28 +143,26 @@ div[data-testid="stDownloadButton"] button span {
 .section-subtitle {
     color: #526358 !important;
     font-size: 13px;
-    margin-bottom: 15px;
+    margin-bottom: 14px;
 }
 
-/* Kartu ringkasan */
+/* KPI */
 .kpi-card {
     background: #FFFFFF;
     border: 1px solid #E0E4DA;
-    border-radius: 16px;
-    padding: 19px;
-    min-height: 135px;
-    box-shadow: 0 4px 15px rgba(32,59,44,.045);
+    border-radius: 15px;
+    padding: 18px;
+    min-height: 128px;
 }
 .kpi-label {
     color: #526358 !important;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: .6px;
     text-transform: uppercase;
 }
 .kpi-value {
     color: #203B2C !important;
-    font-size: clamp(18px,1.6vw,25px);
+    font-size: clamp(18px, 1.6vw, 25px);
     font-weight: 700;
     margin-top: 12px;
     overflow-wrap: anywhere;
@@ -245,25 +170,7 @@ div[data-testid="stDownloadButton"] button span {
 .kpi-note {
     color: #657568 !important;
     font-size: 11px;
-    margin-top: 8px;
-}
-
-/* Grafik */
-div[data-testid="stPlotlyChart"] {
-    background: #FFFFFF;
-    border: 1px solid #E0E4DA;
-    border-radius: 16px;
-    padding: 8px;
-}
-
-/* Radio dan keterangan */
-div[data-testid="stRadio"] label,
-div[data-testid="stRadio"] p,
-div[data-testid="stRadio"] label span {
-    color: #26352C !important;
-}
-div[data-testid="stCaptionContainer"] p {
-    color: #526358 !important;
+    margin-top: 7px;
 }
 
 /* Insight */
@@ -279,6 +186,34 @@ div[data-testid="stCaptionContainer"] p {
 }
 .insight-card b {
     color: #203B2C !important;
+}
+
+/* Tabel detail */
+[data-testid="stDataFrame"] {
+    background: #FFFFFF !important;
+}
+[data-testid="stDataFrame"] * {
+    color: #26352C !important;
+}
+
+/* Tombol download */
+[data-testid="stDownloadButton"] button {
+    background: #314C39 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #314C39 !important;
+    border-radius: 8px !important;
+}
+[data-testid="stDownloadButton"] button * {
+    color: #FFFFFF !important;
+}
+
+/* Radio dan teks */
+[data-testid="stRadio"] label,
+[data-testid="stRadio"] p {
+    color: #26352C !important;
+}
+[data-testid="stCaptionContainer"] p {
+    color: #526358 !important;
 }
 .footer {
     text-align: center;
@@ -305,45 +240,55 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================================================
-# MEMBACA EXCEL
+# BACA FILE EXCEL
+# Pastikan file Excel berada satu folder dengan app.py
 # =========================================================
 EXCEL_FILE = "Data_Simulasi_Penjualan_Gudeg_Jogja_2025.xlsx"
 
 try:
     try:
-        df = pd.read_excel(EXCEL_FILE, sheet_name="Data_Penjualan")
+        df = pd.read_excel(
+            EXCEL_FILE,
+            sheet_name="Data_Penjualan"
+        )
     except ValueError:
-        df = pd.read_excel(EXCEL_FILE, sheet_name=0)
+        df = pd.read_excel(
+            EXCEL_FILE,
+            sheet_name=0
+        )
 
     df.columns = df.columns.astype(str).str.strip()
 
-    required_columns = [
-        "Tanggal", "Jenis_Hari", "Outlet", "Kanal_Penjualan",
-        "Jumlah_Transaksi", "Omzet_Bersih_Rp",
-        "Rating_Rata_rata", "Jumlah_Ulasan"
+    required = [
+        "Tanggal",
+        "Jenis_Hari",
+        "Outlet",
+        "Kanal_Penjualan",
+        "Jumlah_Transaksi",
+        "Omzet_Bersih_Rp",
+        "Rating_Rata_rata",
+        "Jumlah_Ulasan"
     ]
 
-    missing_columns = [
-        col for col in required_columns if col not in df.columns
-    ]
+    missing = [col for col in required if col not in df.columns]
 
-    if missing_columns:
+    if missing:
         st.error(
-            "Kolom berikut tidak ditemukan: "
-            + ", ".join(missing_columns)
+            "Kolom Excel tidak ditemukan: " + ", ".join(missing)
         )
         st.stop()
 
-    # =====================================================
-    # PEMBERSIHAN DATA
-    # =====================================================
     df["Tanggal"] = pd.to_datetime(
-        df["Tanggal"], errors="coerce", dayfirst=True
+        df["Tanggal"],
+        errors="coerce",
+        dayfirst=True
     )
 
     numeric_columns = [
-        "Jumlah_Transaksi", "Omzet_Bersih_Rp",
-        "Rating_Rata_rata", "Jumlah_Ulasan"
+        "Jumlah_Transaksi",
+        "Omzet_Bersih_Rp",
+        "Rating_Rata_rata",
+        "Jumlah_Ulasan"
     ]
 
     for col in numeric_columns:
@@ -353,40 +298,57 @@ try:
         df[col] = df[col].astype("string").str.strip()
 
     df = df.dropna(subset=["Tanggal"]).copy()
-    df["Jumlah_Transaksi"] = df["Jumlah_Transaksi"].fillna(0)
-    df["Omzet_Bersih_Rp"] = df["Omzet_Bersih_Rp"].fillna(0)
-    df["Jumlah_Ulasan"] = df["Jumlah_Ulasan"].fillna(0)
+
+    for col in [
+        "Jumlah_Transaksi",
+        "Omzet_Bersih_Rp",
+        "Jumlah_Ulasan"
+    ]:
+        df[col] = df[col].fillna(0)
 
     if df.empty:
-        st.error("Tidak ada data dengan tanggal yang valid.")
+        st.error("Tidak ada data penjualan dengan tanggal valid.")
         st.stop()
 
     # =====================================================
-    # FILTER SIDEBAR
+    # SIDEBAR FILTER
     # =====================================================
     st.sidebar.markdown(
-        "<div style='background:#314C39;border:1px solid #8FA58A;"
-        "border-radius:12px;padding:13px 15px;margin-bottom:12px'>"
-        "<div style='color:#FFFFFF!important;font-size:23px;"
-        "font-weight:700'>Pusat Filter</div>"
-        "<div style='color:#E2EBDD!important;font-size:13px;"
-        "margin-top:5px'>Pilih data yang ingin dianalisis.</div>"
-        "</div>",
+        "<h2 style='color:#F7F7F0;margin-bottom:4px'>Pusat Filter</h2>",
+        unsafe_allow_html=True
+    )
+    st.sidebar.markdown(
+        "<p style='color:#DCE7D8;font-size:14px;margin-top:0;"
+        "margin-bottom:16px'>Pilih data yang ingin dianalisis.</p>",
         unsafe_allow_html=True
     )
 
-    outlet_options = sorted(df["Outlet"].dropna().unique().tolist())
-    channel_options = sorted(df["Kanal_Penjualan"].dropna().unique().tolist())
-    day_options = sorted(df["Jenis_Hari"].dropna().unique().tolist())
+    outlet_options = sorted(
+        df["Outlet"].dropna().unique().tolist()
+    )
+    channel_options = sorted(
+        df["Kanal_Penjualan"].dropna().unique().tolist()
+    )
+    day_options = sorted(
+        df["Jenis_Hari"].dropna().unique().tolist()
+    )
 
     selected_outlets = st.sidebar.multiselect(
-        "Outlet", outlet_options, default=outlet_options
+        "Outlet",
+        outlet_options,
+        default=outlet_options
     )
+
     selected_channels = st.sidebar.multiselect(
-        "Kanal Penjualan", channel_options, default=channel_options
+        "Kanal Penjualan",
+        channel_options,
+        default=channel_options
     )
+
     selected_days = st.sidebar.multiselect(
-        "Jenis Hari", day_options, default=day_options
+        "Jenis Hari",
+        day_options,
+        default=day_options
     )
 
     min_date = df["Tanggal"].min().date()
@@ -412,7 +374,9 @@ try:
         start_date = end_date = date_range
 
     if start_date > end_date:
-        st.sidebar.error("Tanggal awal tidak boleh melewati tanggal akhir.")
+        st.sidebar.error(
+            "Tanggal awal tidak boleh melewati tanggal akhir."
+        )
         st.stop()
 
     data = df[
@@ -425,22 +389,25 @@ try:
 
     if data.empty:
         st.warning(
-            "Tidak ada data sesuai filter. Silakan ubah pilihan filter."
+            "Tidak ada data sesuai filter. Ubah pilihan filter."
         )
         st.stop()
 
     # =====================================================
-    # FUNGSI FORMAT
+    # FUNGSI FORMAT RUPIAH
     # =====================================================
     def rupiah(value):
         return "Rp " + f"{value:,.0f}".replace(",", ".")
 
     # =====================================================
-    # KPI
+    # RINGKASAN KPI
     # =====================================================
     revenue = data["Omzet_Bersih_Rp"].sum()
     transactions = data["Jumlah_Transaksi"].sum()
-    average_transaction = revenue / transactions if transactions > 0 else 0
+
+    average_transaction = (
+        revenue / transactions if transactions > 0 else 0
+    )
 
     rating_data = data[
         data["Rating_Rata_rata"].notna()
@@ -448,6 +415,7 @@ try:
     ]
 
     total_reviews = rating_data["Jumlah_Ulasan"].sum()
+
     weighted_rating = (
         (
             rating_data["Rating_Rata_rata"]
@@ -460,6 +428,7 @@ try:
         '<div class="section-title">Ringkasan Performa</div>',
         unsafe_allow_html=True
     )
+
     st.markdown(
         f'<div class="section-subtitle">Periode '
         f'{start_date:%d/%m/%Y} – {end_date:%d/%m/%Y}. '
@@ -467,20 +436,32 @@ try:
         unsafe_allow_html=True
     )
 
-    kpi_columns = st.columns(4)
-    kpi_data = [
-        ("Omzet Bersih", rupiah(revenue),
-         "Total pendapatan setelah diskon"),
-        ("Jumlah Transaksi",
-         f"{transactions:,.0f}".replace(",", "."),
-         "Total transaksi terpilih"),
-        ("Rata-rata Nilai Transaksi", rupiah(average_transaction),
-         "Omzet dibagi jumlah transaksi"),
-        ("Rating Berbobot", f"{weighted_rating:.2f} / 5",
-         "Dibobot berdasarkan jumlah ulasan")
+    kpis = st.columns(4)
+
+    kpi_items = [
+        (
+            "Omzet Bersih",
+            rupiah(revenue),
+            "Total pendapatan setelah diskon"
+        ),
+        (
+            "Jumlah Transaksi",
+            f"{transactions:,.0f}".replace(",", "."),
+            "Total transaksi terpilih"
+        ),
+        (
+            "Rata-rata Nilai Transaksi",
+            rupiah(average_transaction),
+            "Omzet dibagi jumlah transaksi"
+        ),
+        (
+            "Rating Berbobot",
+            f"{weighted_rating:.2f} / 5",
+            "Dibobot berdasarkan jumlah ulasan"
+        )
     ]
 
-    for col, (label, value, note) in zip(kpi_columns, kpi_data):
+    for col, (label, value, note) in zip(kpis, kpi_items):
         with col:
             st.markdown(
                 f'<div class="kpi-card">'
@@ -491,19 +472,22 @@ try:
                 unsafe_allow_html=True
             )
 
-    chart_font = dict(
-        family="DM Sans, sans-serif", size=12, color=TEXT
-    )
-    chart_config = {"displayModeBar": False, "responsive": True}
+    chart_font = {
+        "family": "Arial, sans-serif",
+        "size": 12,
+        "color": TEXT
+    }
+
+    chart_config = {
+        "displayModeBar": False,
+        "responsive": True
+    }
 
     # =====================================================
     # TREN OMZET
     # =====================================================
     st.markdown(
-        '<div class="section-title">Tren Omzet Bersih</div>',
-        unsafe_allow_html=True
-    )
-    st.markdown(
+        '<div class="section-title">Tren Omzet Bersih</div>'
         '<div class="section-subtitle">'
         'Pantau perubahan omzet berdasarkan waktu.</div>',
         unsafe_allow_html=True
@@ -512,8 +496,7 @@ try:
     period_choice = st.radio(
         "Kelompokkan tren berdasarkan",
         ["Bulanan", "Mingguan"],
-        horizontal=True,
-        label_visibility="visible"
+        horizontal=True
     )
 
     trend = data.copy()
@@ -530,12 +513,17 @@ try:
         week_end = trend["Periode"] + pd.Timedelta(days=6)
         trend["Label"] = (
             trend["Periode"].dt.strftime("%d %b")
-            + " – " + week_end.dt.strftime("%d %b %Y")
+            + " – "
+            + week_end.dt.strftime("%d %b %Y")
         )
 
     trend = (
-        trend.groupby(["Periode", "Label"], as_index=False)["Omzet_Bersih_Rp"]
-        .sum().sort_values("Periode")
+        trend.groupby(
+            ["Periode", "Label"],
+            as_index=False
+        )["Omzet_Bersih_Rp"]
+        .sum()
+        .sort_values("Periode")
     )
 
     fig_trend = px.area(
@@ -549,280 +537,255 @@ try:
         }
     )
 
-    trend_values = trend["Omzet_Bersih_Rp"].tolist()
-    trend_max = max(trend_values)
-    trend_min = min(trend_values)
-    trend_middle = [BLUE, YELLOW]
-    trend_marker_colors = []
+    if not trend.empty:
+        hi = trend["Omzet_Bersih_Rp"].idxmax()
+        lo = trend["Omzet_Bersih_Rp"].idxmin()
 
-    for i, value in enumerate(trend_values):
-        if value == trend_max:
-            trend_marker_colors.append("#238636")
-        elif value == trend_min:
-            trend_marker_colors.append(RED)
-        else:
-            trend_marker_colors.append(trend_middle[i % len(trend_middle)])
+        marker_colors = [
+            GREEN if idx == hi
+            else RED if idx == lo
+            else BLUE
+            for idx in trend.index
+        ]
 
-    fig_trend.update_traces(
-        line=dict(color=BLUE, width=3),
-        fillcolor="rgba(84,125,138,0.18)",
-        marker=dict(
-            size=[
-                13 if value in (trend_max, trend_min) else 8
-                for value in trend_values
-            ],
-            color=trend_marker_colors,
-            line=dict(color="#FFFFFF", width=1.5)
-        ),
-        hovertemplate="<b>%{x}</b><br>Omzet: Rp %{y:,.0f}<extra></extra>"
-    )
+        marker_sizes = [
+            13 if idx in (hi, lo) else 8
+            for idx in trend.index
+        ]
 
-    if len(trend):
-        max_row = trend.loc[trend["Omzet_Bersih_Rp"].idxmax()]
-        min_row = trend.loc[trend["Omzet_Bersih_Rp"].idxmin()]
+        fig_trend.update_traces(
+            line=dict(color=BLUE, width=3),
+            fillcolor="rgba(84,125,138,0.18)",
+            marker=dict(
+                size=marker_sizes,
+                color=marker_colors,
+                line=dict(color=CARD, width=1.5)
+            ),
+            hovertemplate=(
+                "<b>%{x}</b><br>"
+                "Omzet: Rp %{y:,.0f}"
+                "<extra></extra>"
+            )
+        )
+
+        maxrow = trend.loc[hi]
+        minrow = trend.loc[lo]
 
         fig_trend.add_annotation(
-            x=max_row["Label"],
-            y=max_row["Omzet_Bersih_Rp"],
+            x=maxrow["Label"],
+            y=maxrow["Omzet_Bersih_Rp"],
             text="TERTINGGI",
             showarrow=True,
             arrowhead=2,
             ax=0,
             ay=-35,
-            font=dict(color="#176B2C", size=10),
+            font=dict(color=GREEN, size=10),
             bgcolor="#E4F5E8",
-            bordercolor="#238636",
+            bordercolor=GREEN,
             borderwidth=1
         )
 
-        if min_row["Label"] != max_row["Label"]:
+        if hi != lo:
             fig_trend.add_annotation(
-                x=min_row["Label"],
-                y=min_row["Omzet_Bersih_Rp"],
+                x=minrow["Label"],
+                y=minrow["Omzet_Bersih_Rp"],
                 text="TERENDAH",
                 showarrow=True,
                 arrowhead=2,
                 ax=0,
                 ay=35,
-                font=dict(color="#A61B1B", size=10),
-                bgcolor="#FDE8E7",
+                font=dict(color="#9F302B", size=10),
+                bgcolor="#FCE9E7",
                 bordercolor=RED,
                 borderwidth=1
             )
 
     fig_trend.update_layout(
         height=390,
-        margin=dict(l=20, r=20, t=25, b=25),
+        margin=dict(l=20, r=20, t=45, b=25),
         paper_bgcolor=CARD,
         plot_bgcolor=CARD,
         font=chart_font,
-        title_font=dict(color=TEXT),
-        xaxis_title="Periode",
-        yaxis_title="Omzet Bersih (Rp)",
-        hoverlabel=dict(bgcolor="#FFFFFF", font=dict(color=TEXT))
+        hoverlabel=dict(
+            bgcolor=CARD,
+            font=dict(color=TEXT)
+        )
     )
+
     fig_trend.update_xaxes(
         color=TEXT,
-        title_font=dict(color=TEXT),
-        tickfont=dict(color=MUTED, size=11),
+        tickfont=dict(color=MUTED),
         showgrid=False,
         automargin=True
     )
+
     fig_trend.update_yaxes(
         color=TEXT,
-        title_font=dict(color=TEXT),
-        tickfont=dict(color=MUTED, size=11),
+        tickfont=dict(color=MUTED),
         gridcolor=GRID,
-        zerolinecolor=GRID,
         tickformat="~s"
     )
-    st.plotly_chart(fig_trend, use_container_width=True, config=chart_config)
+
+    st.plotly_chart(
+        fig_trend,
+        use_container_width=True,
+        config=chart_config
+    )
 
     # =====================================================
     # PERBANDINGAN OUTLET DAN KANAL
     # =====================================================
     st.markdown(
-        '<div class="section-title">Perbandingan Kinerja</div>',
-        unsafe_allow_html=True
-    )
-    st.markdown(
+        '<div class="section-title">Perbandingan Kinerja</div>'
         '<div class="section-subtitle">'
-        'Bandingkan omzet antar-outlet dan kanal penjualan.</div>',
+        'Merah = terendah, kuning dan biru = nilai menengah, '
+        'hijau = tertinggi.</div>',
         unsafe_allow_html=True
     )
 
     outlet_sales = (
         data.groupby("Outlet", as_index=False)["Omzet_Bersih_Rp"]
-        .sum().sort_values("Omzet_Bersih_Rp", ascending=True)
+        .sum()
+        .sort_values("Omzet_Bersih_Rp", ascending=True)
     )
+
     channel_sales = (
-        data.groupby("Kanal_Penjualan", as_index=False)["Omzet_Bersih_Rp"]
-        .sum().sort_values("Omzet_Bersih_Rp", ascending=True)
+        data.groupby(
+            "Kanal_Penjualan",
+            as_index=False
+        )["Omzet_Bersih_Rp"]
+        .sum()
+        .sort_values("Omzet_Bersih_Rp", ascending=True)
     )
 
-    left, right = st.columns(2)
+    rank_palette = [RED, YELLOW, BLUE, GREEN]
 
-    with left:
-        fig_outlet = px.bar(
+    def rank_colors(n):
+        if n <= 0:
+            return []
+        if n == 1:
+            return [GREEN]
+        return [
+            rank_palette[
+                round(i * (len(rank_palette) - 1) / (n - 1))
+            ]
+            for i in range(n)
+        ]
+
+    c1, c2 = st.columns(2)
+
+    for container, sales, category, title in [
+        (
+            c1,
             outlet_sales,
-            x="Omzet_Bersih_Rp",
-            y="Outlet",
-            orientation="h",
-            text="Omzet_Bersih_Rp",
-            title="Kinerja per Outlet",
-            labels={
-                "Outlet": "Outlet",
-                "Omzet_Bersih_Rp": "Omzet Bersih (Rp)"
-            }
-        )
-
-        rank_palette = [RED, YELLOW, BLUE, "#238636"]
-        outlet_colors = [
-            rank_palette[
-                round(i * (len(rank_palette) - 1)
-                      / max(len(outlet_sales) - 1, 1))
-            ]
-            for i in range(len(outlet_sales))
-        ]
-
-        fig_outlet.update_traces(
-            marker_color=outlet_colors,
-            marker_line_color="#FFFFFF",
-            marker_line_width=1.2,
-            texttemplate="%{x:,.0f}",
-            textposition="outside",
-            cliponaxis=False,
-            hovertemplate=(
-                "<b>%{y}</b><br>"
-                "Omzet: Rp %{x:,.0f}<br>"
-                "Posisi: %{customdata}<extra></extra>"
-            ),
-            customdata=[
-                "TERENDAH" if i == 0
-                else "TERTINGGI" if i == len(outlet_sales) - 1
-                else "MENENGAH"
-                for i in range(len(outlet_sales))
-            ]
-        )
-        fig_outlet.update_layout(
-            height=380,
-            margin=dict(l=20, r=90, t=60, b=35),
-            paper_bgcolor=CARD,
-            plot_bgcolor=CARD,
-            showlegend=False,
-            font=chart_font,
-            title_font=dict(size=16, color=TEXT),
-            hoverlabel=dict(bgcolor="#FFFFFF", font=dict(color=TEXT))
-        )
-        fig_outlet.update_xaxes(
-            color=TEXT,
-            tickfont=dict(color=MUTED),
-            gridcolor=GRID,
-            title_font=dict(color=TEXT),
-            tickformat="~s"
-        )
-        fig_outlet.update_yaxes(
-            color=TEXT,
-            tickfont=dict(color=TEXT),
-            title_font=dict(color=TEXT),
-            showgrid=False,
-            automargin=True
-        )
-        st.plotly_chart(
-            fig_outlet, use_container_width=True, config=chart_config
-        )
-
-    with right:
-        fig_channel = px.bar(
+            "Outlet",
+            "Kinerja per Outlet"
+        ),
+        (
+            c2,
             channel_sales,
-            x="Omzet_Bersih_Rp",
-            y="Kanal_Penjualan",
-            orientation="h",
-            text="Omzet_Bersih_Rp",
-            title="Kinerja per Kanal Penjualan",
-            labels={
-                "Kanal_Penjualan": "Kanal Penjualan",
-                "Omzet_Bersih_Rp": "Omzet Bersih (Rp)"
-            }
+            "Kanal_Penjualan",
+            "Kinerja per Kanal Penjualan"
         )
+    ]:
+        with container:
+            fig = px.bar(
+                sales,
+                x="Omzet_Bersih_Rp",
+                y=category,
+                orientation="h",
+                text="Omzet_Bersih_Rp",
+                title=title,
+                labels={
+                    category: category.replace("_", " "),
+                    "Omzet_Bersih_Rp": "Omzet Bersih (Rp)"
+                }
+            )
 
-        rank_palette = [RED, YELLOW, BLUE, "#238636"]
-        channel_colors = [
-            rank_palette[
-                round(i * (len(rank_palette) - 1)
-                      / max(len(channel_sales) - 1, 1))
-            ]
-            for i in range(len(channel_sales))
-        ]
-
-        fig_channel.update_traces(
-            marker_color=channel_colors,
-            marker_line_color="#FFFFFF",
-            marker_line_width=1.2,
-            texttemplate="%{x:,.0f}",
-            textposition="outside",
-            cliponaxis=False,
-            hovertemplate=(
-                "<b>%{y}</b><br>"
-                "Omzet: Rp %{x:,.0f}<br>"
-                "Posisi: %{customdata}<extra></extra>"
-            ),
-            customdata=[
+            positions = [
                 "TERENDAH" if i == 0
-                else "TERTINGGI" if i == len(channel_sales) - 1
+                else "TERTINGGI" if i == len(sales) - 1
                 else "MENENGAH"
-                for i in range(len(channel_sales))
+                for i in range(len(sales))
             ]
-        )
-        fig_channel.update_layout(
-            height=380,
-            margin=dict(l=20, r=90, t=60, b=35),
-            paper_bgcolor=CARD,
-            plot_bgcolor=CARD,
-            showlegend=False,
-            font=chart_font,
-            title_font=dict(size=16, color=TEXT),
-            hoverlabel=dict(bgcolor="#FFFFFF", font=dict(color=TEXT))
-        )
-        fig_channel.update_xaxes(
-            color=TEXT,
-            tickfont=dict(color=MUTED),
-            gridcolor=GRID,
-            title_font=dict(color=TEXT),
-            tickformat="~s"
-        )
-        fig_channel.update_yaxes(
-            color=TEXT,
-            tickfont=dict(color=TEXT),
-            title_font=dict(color=TEXT),
-            showgrid=False,
-            automargin=True
-        )
-        st.plotly_chart(
-            fig_channel, use_container_width=True, config=chart_config
-        )
+
+            fig.update_traces(
+                marker_color=rank_colors(len(sales)),
+                marker_line_color=CARD,
+                marker_line_width=1.2,
+                texttemplate="%{x:,.0f}",
+                textposition="outside",
+                cliponaxis=False,
+                customdata=positions,
+                hovertemplate=(
+                    "<b>%{y}</b><br>"
+                    "Omzet: Rp %{x:,.0f}<br>"
+                    "Posisi: %{customdata}"
+                    "<extra></extra>"
+                )
+            )
+
+            fig.update_layout(
+                height=380,
+                margin=dict(l=20, r=90, t=60, b=35),
+                paper_bgcolor=CARD,
+                plot_bgcolor=CARD,
+                showlegend=False,
+                font=chart_font,
+                title_font=dict(size=16, color=TEXT),
+                hoverlabel=dict(
+                    bgcolor=CARD,
+                    font=dict(color=TEXT)
+                )
+            )
+
+            fig.update_xaxes(
+                color=TEXT,
+                tickfont=dict(color=MUTED),
+                gridcolor=GRID,
+                tickformat="~s"
+            )
+
+            fig.update_yaxes(
+                color=TEXT,
+                tickfont=dict(color=TEXT),
+                showgrid=False,
+                automargin=True
+            )
+
+            st.plotly_chart(
+                fig,
+                use_container_width=True,
+                config=chart_config
+            )
 
     st.markdown(
-        '<div class="insight-card"><b>Keterangan warna:</b> '
-        '<span style="color:#D94841;font-weight:700">Merah = terendah</span> · '
-        '<span style="color:#B8860B;font-weight:700">Kuning = rendah-menengah</span> · '
-        '<span style="color:#547D8A;font-weight:700">Biru = menengah-tinggi</span> · '
-        '<span style="color:#238636;font-weight:700">Hijau = tertinggi</span>. '
-        'Warna ditentukan dari nilai pada filter yang sedang aktif.</div>',
+        f'<div class="insight-card"><b>Keterangan warna:</b> '
+        f'<span style="color:{RED};font-weight:700">'
+        f'Merah = terendah</span> · '
+        f'<span style="color:#A77B00;font-weight:700">'
+        f'Kuning = rendah-menengah</span> · '
+        f'<span style="color:{BLUE};font-weight:700">'
+        f'Biru = menengah-tinggi</span> · '
+        f'<span style="color:{GREEN};font-weight:700">'
+        f'Hijau = tertinggi</span>. '
+        f'Warna mengikuti nilai setelah filter diterapkan.</div>',
         unsafe_allow_html=True
     )
 
     # =====================================================
-    # HEATMAP OMZET
+    # HEATMAP OMZET PENJUALAN
     # =====================================================
     st.markdown(
         '<div class="section-title">Heatmap Omzet Penjualan</div>',
         unsafe_allow_html=True
     )
+
     st.markdown(
         '<div class="section-subtitle">'
         'Warna hijau semakin tua berarti omzet semakin besar. '
-        'Bandingkan omzet setiap outlet berdasarkan jenis hari.</div>',
+        'Bandingkan omzet setiap outlet berdasarkan jenis hari.'
+        '</div>',
         unsafe_allow_html=True
     )
 
@@ -835,14 +798,6 @@ try:
     )
 
     if not heatmap_data.empty and heatmap_data.shape[1] > 0:
-        # Kompatibel dengan pandas versi baru, tanpa applymap().
-        heatmap_labels = heatmap_data.apply(
-            lambda col: col.map(
-                lambda value: f"Rp {value:,.0f}".replace(",", ".")
-                if pd.notna(value) else ""
-            )
-        )
-
         fig_heatmap = px.imshow(
             heatmap_data,
             labels={
@@ -853,29 +808,33 @@ try:
             x=heatmap_data.columns.tolist(),
             y=heatmap_data.index.tolist(),
             color_continuous_scale=[
-                "#F1F7EF", "#B7D7B0", "#6FA66B", "#245B35"
+                "#F1F7EF",
+                "#B7D7B0",
+                "#6FA66B",
+                "#245B35"
             ],
-            aspect="auto",
-            text_auto=False
+            aspect="auto"
         )
 
-        # Nilai ditampilkan langsung di setiap kotak heatmap.
+        max_value = heatmap_data.to_numpy().max()
+
         for row_i, outlet_name in enumerate(heatmap_data.index):
             for col_i, day_name in enumerate(heatmap_data.columns):
                 value = heatmap_data.iloc[row_i, col_i]
-                max_value = heatmap_data.to_numpy().max()
+
+                label_color = (
+                    CARD
+                    if max_value > 0 and value >= max_value * 0.55
+                    else DARK
+                )
 
                 fig_heatmap.add_annotation(
                     x=day_name,
                     y=outlet_name,
-                    text=f"Rp {value:,.0f}".replace(",", "."),
+                    text=rupiah(value),
                     showarrow=False,
                     font=dict(
-                        color=(
-                            "#FFFFFF"
-                            if max_value > 0 and value >= max_value * 0.55
-                            else "#203B2C"
-                        ),
+                        color=label_color,
                         size=11
                     )
                 )
@@ -890,13 +849,18 @@ try:
                 title="Omzet (Rp)",
                 tickformat="~s"
             ),
-            hoverlabel=dict(bgcolor=WHITE, font=dict(color=TEXT))
+            hoverlabel=dict(
+                bgcolor=CARD,
+                font=dict(color=TEXT)
+            )
         )
+
         fig_heatmap.update_xaxes(
             side="bottom",
             tickfont=dict(color=TEXT),
             automargin=True
         )
+
         fig_heatmap.update_yaxes(
             autorange="reversed",
             tickfont=dict(color=TEXT),
@@ -904,44 +868,88 @@ try:
         )
 
         st.plotly_chart(
-            fig_heatmap, use_container_width=True, config=chart_config
+            fig_heatmap,
+            use_container_width=True,
+            config=chart_config
         )
+
         st.caption(
-            "Cara membaca: kotak hijau tua menunjukkan omzet yang lebih tinggi. "
-            "Arahkan kursor ke kotak untuk melihat nilai omzetnya."
+            "Cara membaca: kotak hijau tua menunjukkan omzet yang lebih "
+            "tinggi. Arahkan kursor ke kotak untuk melihat nilai omzet."
         )
+
+        highest_position = heatmap_data.stack().idxmax()
+        lowest_position = heatmap_data.stack().idxmin()
+        highest_value = heatmap_data.max().max()
+        lowest_value = heatmap_data.min().min()
+
+        high_col, low_col = st.columns(2)
+
+        with high_col:
+            st.markdown(
+                f'<div class="insight-card">'
+                f'<b>Omzet tertinggi pada heatmap</b><br>'
+                f'Outlet: {highest_position[0]}<br>'
+                f'Jenis hari: {highest_position[1]}<br>'
+                f'<b>{rupiah(highest_value)}</b></div>',
+                unsafe_allow_html=True
+            )
+
+        with low_col:
+            st.markdown(
+                f'<div class="insight-card">'
+                f'<b>Omzet terendah pada heatmap</b><br>'
+                f'Outlet: {lowest_position[0]}<br>'
+                f'Jenis hari: {lowest_position[1]}<br>'
+                f'<b>{rupiah(lowest_value)}</b></div>',
+                unsafe_allow_html=True
+            )
+
     else:
-        st.info("Heatmap belum dapat dibuat karena tidak ada data untuk filter ini.")
+        st.info(
+            "Heatmap belum dapat dibuat karena tidak ada data "
+            "untuk filter yang dipilih."
+        )
 
     # =====================================================
-    # POLA PENJUALAN: PIE CHART
+    # POLA PENJUALAN DAN INSIGHT
     # =====================================================
     st.markdown(
         '<div class="section-title">Pola Penjualan</div>',
         unsafe_allow_html=True
     )
+
     st.markdown(
         '<div class="section-subtitle">'
-        'Kontribusi omzet berdasarkan jenis hari dan insight.</div>',
+        'Kontribusi omzet berdasarkan jenis hari dan insight otomatis.'
+        '</div>',
         unsafe_allow_html=True
     )
 
     day_sales = (
-        data.groupby("Jenis_Hari", as_index=False)["Omzet_Bersih_Rp"]
-        .sum().sort_values("Omzet_Bersih_Rp", ascending=False)
+        data.groupby(
+            "Jenis_Hari",
+            as_index=False
+        )["Omzet_Bersih_Rp"]
+        .sum()
+        .sort_values("Omzet_Bersih_Rp", ascending=False)
     )
 
     pie_col, insight_col = st.columns([1, 1])
 
     with pie_col:
-        pie_palette = ["#238636", BLUE, YELLOW, RED]
+        pie_palette = [GREEN, BLUE, YELLOW, RED]
+
         pie_colors = [
             pie_palette[
-                round(i * (len(pie_palette) - 1)
-                      / max(len(day_sales) - 1, 1))
+                round(
+                    i * (len(pie_palette) - 1)
+                    / max(len(day_sales) - 1, 1)
+                )
             ]
             for i in range(len(day_sales))
         ]
+
         pie_pull = [
             0.10 if i == 0
             else 0.08 if i == len(day_sales) - 1
@@ -957,18 +965,23 @@ try:
             title="Proporsi Omzet per Jenis Hari",
             color_discrete_sequence=pie_colors
         )
+
         fig_pie.update_traces(
             pull=pie_pull,
-            marker=dict(line=dict(color="#FFFFFF", width=2)),
+            marker=dict(
+                line=dict(color=CARD, width=2)
+            ),
             textposition="inside",
             textinfo="label+percent",
-            insidetextfont=dict(color="#FFFFFF", size=13),
+            insidetextfont=dict(color=TEXT, size=12),
             hovertemplate=(
                 "<b>%{label}</b><br>"
                 "Omzet: Rp %{value:,.0f}<br>"
-                "Kontribusi: %{percent}<extra></extra>"
+                "Kontribusi: %{percent}"
+                "<extra></extra>"
             )
         )
+
         fig_pie.update_layout(
             height=380,
             margin=dict(l=15, r=15, t=60, b=20),
@@ -976,35 +989,44 @@ try:
             plot_bgcolor=CARD,
             font=chart_font,
             title_font=dict(size=16, color=TEXT),
-            legend=dict(font=dict(color=TEXT, size=12)),
-            hoverlabel=dict(bgcolor="#FFFFFF", font=dict(color=TEXT))
-        )
-        st.plotly_chart(
-            fig_pie, use_container_width=True, config=chart_config
+            legend=dict(
+                font=dict(color=TEXT, size=12)
+            ),
+            hoverlabel=dict(
+                bgcolor=CARD,
+                font=dict(color=TEXT)
+            )
         )
 
-    # =====================================================
-    # INSIGHT OTOMATIS
-    # =====================================================
+        st.plotly_chart(
+            fig_pie,
+            use_container_width=True,
+            config=chart_config
+        )
+
     with insight_col:
         st.markdown(
-            '<div class="section-title" style="font-size:23px;">'
+            '<div class="section-title" style="font-size:23px">'
             'Insight Otomatis</div>',
             unsafe_allow_html=True
         )
 
         best_outlet = outlet_sales.iloc[-1]
+        worst_outlet = outlet_sales.iloc[0]
         best_channel = channel_sales.iloc[-1]
+        worst_channel = channel_sales.iloc[0]
         best_day = day_sales.iloc[0]
 
         outlet_share = (
             best_outlet["Omzet_Bersih_Rp"] / revenue * 100
             if revenue else 0
         )
+
         channel_share = (
             best_channel["Omzet_Bersih_Rp"] / revenue * 100
             if revenue else 0
         )
+
         day_share = (
             best_day["Omzet_Bersih_Rp"] / revenue * 100
             if revenue else 0
@@ -1013,63 +1035,82 @@ try:
         st.markdown(
             f'<div class="insight-card">'
             f'<b>Outlet dengan omzet tertinggi</b><br>'
-            f'{best_outlet["Outlet"]} mencatat '
+            f'{best_outlet["Outlet"]}: '
             f'{rupiah(best_outlet["Omzet_Bersih_Rp"])} '
-            f'({outlet_share:.1f}% dari omzet terfilter).'
-            f'</div>',
+            f'({outlet_share:.1f}% dari omzet terfilter).</div>',
             unsafe_allow_html=True
         )
+
         st.markdown(
             f'<div class="insight-card">'
-            f'<b>Kanal penjualan terkuat</b><br>'
-            f'{best_channel["Kanal_Penjualan"]} mencatat '
-            f'{rupiah(best_channel["Omzet_Bersih_Rp"])} '
-            f'({channel_share:.1f}% dari omzet terfilter).'
-            f'</div>',
+            f'<b>Outlet dengan omzet terendah</b><br>'
+            f'{worst_outlet["Outlet"]}: '
+            f'{rupiah(worst_outlet["Omzet_Bersih_Rp"])}.</div>',
             unsafe_allow_html=True
         )
+
+        st.markdown(
+            f'<div class="insight-card">'
+            f'<b>Kanal penjualan tertinggi / terendah</b><br>'
+            f'{best_channel["Kanal_Penjualan"]}: '
+            f'{rupiah(best_channel["Omzet_Bersih_Rp"])} · '
+            f'{worst_channel["Kanal_Penjualan"]}: '
+            f'{rupiah(worst_channel["Omzet_Bersih_Rp"])}.</div>',
+            unsafe_allow_html=True
+        )
+
         st.markdown(
             f'<div class="insight-card">'
             f'<b>Jenis hari dengan omzet tertinggi</b><br>'
-            f'{best_day["Jenis_Hari"]} mencatat '
+            f'{best_day["Jenis_Hari"]}: '
             f'{rupiah(best_day["Omzet_Bersih_Rp"])} '
-            f'({day_share:.1f}% dari omzet terfilter).'
-            f'</div>',
+            f'({day_share:.1f}% dari omzet terfilter).</div>',
             unsafe_allow_html=True
         )
-        st.caption("Ringkasan diperbarui otomatis berdasarkan filter.")
+
+        st.caption(
+            "Ringkasan diperbarui otomatis berdasarkan filter."
+        )
 
     # =====================================================
-    # DETAIL DATA DAN DOWNLOAD
+    # DETAIL DATA PENJUALAN DAN DOWNLOAD
     # =====================================================
     st.markdown(
-        '<div class="section-title">Detail dan Unduh Data</div>'
-        '<div class="section-subtitle">'
-        'Data ditampilkan sesuai filter yang sedang dipilih.</div>',
+        '<div class="section-title">Lihat Detail Data Penjualan</div>',
         unsafe_allow_html=True
     )
 
-    with st.expander("Lihat detail data penjualan", expanded=True):
-        detail = data.sort_values("Tanggal", ascending=False).copy()
+    st.markdown(
+        '<div class="section-subtitle">'
+        'Data mengikuti filter outlet, kanal penjualan, jenis hari, '
+        'dan rentang tanggal yang dipilih.</div>',
+        unsafe_allow_html=True
+    )
 
-        st.dataframe(
-            detail,
-            use_container_width=True,
-            hide_index=True,
-            height=400
-        )
+    detail = data.sort_values(
+        "Tanggal",
+        ascending=False
+    ).copy()
 
-        st.download_button(
-            "Download data terfilter (CSV)",
-            data=detail.to_csv(index=False).encode("utf-8-sig"),
-            file_name="data_penjualan_gudeg.csv",
-            mime="text/csv"
-        )
+    st.dataframe(
+        detail,
+        use_container_width=True,
+        hide_index=True,
+        height=400
+    )
+
+    st.download_button(
+        label="Download Data Penjualan (CSV)",
+        data=detail.to_csv(index=False).encode("utf-8-sig"),
+        file_name="data_penjualan_gudeg.csv",
+        mime="text/csv"
+    )
 
     # =====================================================
     # FOOTER
     # =====================================================
     st.markdown("---")
+
     st.markdown(
         f'<div class="footer">'
         f'GUDEG SEKAR ARUM · YOGYAKARTA<br>'
@@ -1085,8 +1126,9 @@ try:
 except FileNotFoundError:
     st.error(
         f"File Excel '{EXCEL_FILE}' tidak ditemukan. "
-        "Unggah file Excel ke repository yang sama dengan app.py."
+        "Unggah file Excel ke repository GitHub yang sama dengan app.py."
     )
+
 except Exception as error:
     st.error(
         f"Terjadi kesalahan saat membaca atau mengolah Excel: {error}"
