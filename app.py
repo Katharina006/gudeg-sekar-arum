@@ -21,6 +21,8 @@ SAGE = "#8FA58A"
 ORANGE = "#C8753D"
 BLUE = "#547D8A"
 PURPLE = "#88718F"
+RED = "#D94841"
+YELLOW = "#F2C94C"
 TEXT = "#26352C"
 MUTED = "#526358"
 GRID = "#E1E5DC"
@@ -82,6 +84,47 @@ st.markdown("""
 
 h1, h2, h3, p, label {
     color: #26352C;
+}
+
+/* Paksa warna teks dan latar tetap terbaca pada mode terang/gelap */
+[data-testid="stDateInput"] label,
+[data-testid="stDateInput"] p,
+[data-testid="stDateInput"] input,
+[data-testid="stDateInput"] button,
+[data-testid="stDateInput"] [data-baseweb="input"] > div,
+[data-testid="stDateInput"] [data-baseweb="select"] > div {
+    color: #203B2C !important;
+    background-color: #FFFFFF !important;
+    border-color: #B8C7B5 !important;
+}
+[data-testid="stDateInput"] svg { fill: #203B2C !important; }
+
+/* Detail penjualan */
+div[data-testid="stExpander"],
+div[data-testid="stExpander"] details,
+div[data-testid="stExpander"] summary,
+div[data-testid="stDataFrame"],
+div[data-testid="stDataFrame"] *,
+div[data-testid="stTable"] {
+    background-color: #FFFFFF !important;
+    color: #203B2C !important;
+}
+div[data-testid="stExpander"] summary p,
+div[data-testid="stExpander"] summary span,
+div[data-testid="stExpander"] label {
+    color: #203B2C !important;
+}
+
+/* Tombol download konsisten kontras di semua tema */
+div[data-testid="stDownloadButton"] button {
+    background-color: #203B2C !important;
+    color: #FFFFFF !important;
+    border: 1px solid #203B2C !important;
+    font-weight: 700 !important;
+}
+div[data-testid="stDownloadButton"] button p,
+div[data-testid="stDownloadButton"] button span {
+    color: #FFFFFF !important;
 }
 
 /* Header */
@@ -564,18 +607,54 @@ try:
         }
     )
 
+    # Warna menunjukkan posisi nilai: hijau tertinggi, merah terendah,
+    # kuning/biru untuk titik di antaranya.
+    trend_values = trend["Omzet_Bersih_Rp"].tolist()
+    trend_max = max(trend_values)
+    trend_min = min(trend_values)
+    trend_middle = [BLUE, YELLOW]
+    trend_marker_colors = []
+    for i, value in enumerate(trend_values):
+        if value == trend_max:
+            trend_marker_colors.append("#238636")
+        elif value == trend_min:
+            trend_marker_colors.append(RED)
+        else:
+            trend_marker_colors.append(trend_middle[i % len(trend_middle)])
     fig_trend.update_traces(
-        line=dict(color=GREEN, width=3),
-        fillcolor="rgba(79,107,80,0.20)",
-        marker=dict(size=7, color=GREEN),
+        line=dict(color=BLUE, width=3),
+        fillcolor="rgba(84,125,138,0.18)",
+        marker=dict(
+            size=[13 if value in (trend_max, trend_min) else 8
+                  for value in trend_values],
+            color=trend_marker_colors,
+            line=dict(color="#FFFFFF", width=1.5)
+        ),
         hovertemplate=(
             "<b>%{x}</b><br>"
             "Omzet: Rp %{y:,.0f}<extra></extra>"
         )
     )
 
+    if len(trend):
+        max_row = trend.loc[trend["Omzet_Bersih_Rp"].idxmax()]
+        min_row = trend.loc[trend["Omzet_Bersih_Rp"].idxmin()]
+        fig_trend.add_annotation(
+            x=max_row["Label"], y=max_row["Omzet_Bersih_Rp"],
+            text="TERTINGGI", showarrow=True, arrowhead=2,
+            ax=0, ay=-35, font=dict(color="#176B2C", size=10),
+            bgcolor="#E4F5E8", bordercolor="#238636", borderwidth=1
+        )
+        if min_row["Label"] != max_row["Label"]:
+            fig_trend.add_annotation(
+                x=min_row["Label"], y=min_row["Omzet_Bersih_Rp"],
+                text="TERENDAH", showarrow=True, arrowhead=2,
+                ax=0, ay=35, font=dict(color="#A61B1B", size=10),
+                bgcolor="#FDE8E7", bordercolor=RED, borderwidth=1
+            )
+
     fig_trend.update_layout(
-        height=360,
+        height=390,
         margin=dict(l=20, r=20, t=25, b=25),
         paper_bgcolor=CARD,
         plot_bgcolor=CARD,
@@ -658,14 +737,29 @@ try:
             color_discrete_sequence=[GREEN]
         )
 
+        # Urutan dari terendah ke tertinggi: merah, kuning, biru, hijau.
+        rank_palette = [RED, YELLOW, BLUE, "#238636"]
+        outlet_colors = [
+            rank_palette[round(i * (len(rank_palette) - 1) / max(len(outlet_sales) - 1, 1))]
+            for i in range(len(outlet_sales))
+        ]
+
         fig_outlet.update_traces(
+            marker_color=outlet_colors,
+            marker_line_color="#FFFFFF",
+            marker_line_width=1.2,
             texttemplate="%{x:,.0f}",
             textposition="outside",
             cliponaxis=False,
             hovertemplate=(
                 "<b>%{y}</b><br>"
-                "Omzet: Rp %{x:,.0f}<extra></extra>"
-            )
+                "Omzet: Rp %{x:,.0f}<br>"
+                "Posisi: %{customdata}<extra></extra>"
+            ),
+            customdata=[
+                "TERENDAH" if i == 0 else "TERTINGGI" if i == len(outlet_sales) - 1 else "MENENGAH"
+                for i in range(len(outlet_sales))
+            ]
         )
 
         fig_outlet.update_layout(
@@ -719,14 +813,29 @@ try:
             color_discrete_sequence=[ORANGE]
         )
 
+        # Skema yang sama supaya peringkat mudah dibandingkan.
+        rank_palette = [RED, YELLOW, BLUE, "#238636"]
+        channel_colors = [
+            rank_palette[round(i * (len(rank_palette) - 1) / max(len(channel_sales) - 1, 1))]
+            for i in range(len(channel_sales))
+        ]
+
         fig_channel.update_traces(
+            marker_color=channel_colors,
+            marker_line_color="#FFFFFF",
+            marker_line_width=1.2,
             texttemplate="%{x:,.0f}",
             textposition="outside",
             cliponaxis=False,
             hovertemplate=(
                 "<b>%{y}</b><br>"
-                "Omzet: Rp %{x:,.0f}<extra></extra>"
-            )
+                "Omzet: Rp %{x:,.0f}<br>"
+                "Posisi: %{customdata}<extra></extra>"
+            ),
+            customdata=[
+                "TERENDAH" if i == 0 else "TERTINGGI" if i == len(channel_sales) - 1 else "MENENGAH"
+                for i in range(len(channel_sales))
+            ]
         )
 
         fig_channel.update_layout(
@@ -765,6 +874,16 @@ try:
             config=chart_config
         )
 
+    st.markdown(
+        '<div class="insight-card"><b>Keterangan warna:</b> '
+        '<span style="color:#D94841;font-weight:700">Merah = terendah</span> · '
+        '<span style="color:#B8860B;font-weight:700">Kuning = rendah-menengah</span> · '
+        '<span style="color:#547D8A;font-weight:700">Biru = menengah-tinggi</span> · '
+        '<span style="color:#238636;font-weight:700">Hijau = tertinggi</span>. '
+        'Warna ditentukan dari nilai pada filter yang sedang aktif.</div>',
+        unsafe_allow_html=True
+    )
+
     # =====================================================
     # PROPORSI OMZET BERDASARKAN JENIS HARI
     # =====================================================
@@ -791,25 +910,34 @@ try:
     pie_col, insight_col = st.columns([1, 1])
 
     with pie_col:
+        # Data pie sudah diurutkan dari omzet tertinggi.
+        # Irisan terbesar diberi jingga dan sedikit ditarik keluar.
+        # Data diurutkan dari tertinggi ke terendah: hijau terbesar,
+        # merah terkecil, kuning/biru untuk kategori di antaranya.
+        pie_palette = ["#238636", BLUE, YELLOW, RED]
+        pie_colors = [
+            pie_palette[round(i * (len(pie_palette) - 1) / max(len(day_sales) - 1, 1))]
+            for i in range(len(day_sales))
+        ]
+        pie_pull = [
+            0.10 if i == 0 else 0.08 if i == len(day_sales) - 1 else 0
+            for i in range(len(day_sales))
+        ]
+
         fig_pie = px.pie(
             day_sales,
             names="Jenis_Hari",
             values="Omzet_Bersih_Rp",
             hole=0.55,
             title="Proporsi Omzet per Jenis Hari",
-            color_discrete_sequence=[
-                GREEN,
-                ORANGE,
-                SAGE,
-                BLUE,
-                PURPLE,
-                "#B69A79"
-            ]
+            color_discrete_sequence=pie_colors
         )
 
         fig_pie.update_traces(
+            pull=pie_pull,
+            marker=dict(line=dict(color="#FFFFFF", width=2)),
             textposition="inside",
-            textinfo="percent",
+            textinfo="label+percent",
             insidetextfont=dict(
                 color="#FFFFFF",
                 size=13
@@ -909,6 +1037,12 @@ try:
     # =====================================================
     # TABEL DETAIL DAN DOWNLOAD
     # =====================================================
+    st.markdown(
+        '<div class="section-title">Detail dan Unduh Data</div>'
+        '<div class="section-sub">Bagian ini memakai latar putih dan teks gelap '
+        'agar tetap terbaca saat tema aplikasi berubah.</div>',
+        unsafe_allow_html=True
+    )
     with st.expander("Lihat detail data penjualan"):
         st.dataframe(
             data.sort_values(
